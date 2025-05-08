@@ -20,11 +20,32 @@ class SudokuProblem(Problem):
         
         variables = []
         constraints = []
+        var_grid = []
 
-        # Implement here
-        ...
-        
-        
+        for row in range(9):
+            var_row = []
+            for col in range(9):
+                val = board[row][col]
+                domain = [val] if val != 0 else list(range(1, 10))
+                var = Variable[int](domain, name=f"V{row}{col}", initial_value=val if val != 0 else None)
+                var_row.append(var)
+                variables.append(var)
+            var_grid.append(var_row)
+
+        for row in var_grid:
+            constraints.append(SudokuConstraint(row))
+
+        for col in range(9):
+            constraints.append(SudokuConstraint([var_grid[row][col] for row in range(9)]))
+
+        for box_row in range(0, 9, 3):
+            for box_col in range(0, 9, 3):
+                box = []
+                for r in range(3):
+                    for c in range(3):
+                        box.append(var_grid[box_row + r][box_col + c])
+                constraints.append(SudokuConstraint(box))
+
         super().__init__(constraints, variables, name)
     
     def print_assignments(self):

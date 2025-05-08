@@ -53,8 +53,8 @@ class Solver:
         """
         if self.is_finished():
             return True
-        var = self.problem.get_unassigned_variables()[0]
-        for value in var.domain:
+        var = self.mrv()
+        for value in self.lcv(var):
             self.save_domain(self.problem.variables)
             var.value = value
             if self.is_consistent(var) and self.forward_check(var): 
@@ -98,7 +98,10 @@ class Solver:
         Returns:
             Optional[Variable]: The variable with the smallest domain or None if all variables have been assigned.
         """
-        pass
+        unassigneds = self.problem.get_unassigned_variables()
+        if not unassigneds:
+            return None
+        return min(unassigneds, key=lambda var: len(var.domain))
 
     def is_consistent(self, var: Variable) -> bool:
         """
@@ -122,7 +125,21 @@ class Solver:
         Returns:
             List: The domain values of the variable ordered according to the number of conflicts they cause.
         """
-        pass
+        def count_constraints(value):
+            count = 0
+            var.value = value
+            for neighbor in var.neighbors:
+                if not neighbor.has_value:
+                    for v in neighbor.domain:
+                        neighbor.value = v
+                        for constraint in self.problem.get_constraints(neighbor):
+                            if not constraint.is_satisfied():
+                                count += 1
+                        neighbor.value = None
+            var.value = None
+            return count
+
+        return sorted(var.domain, key=count_constraints)
     
     def save_domain(self, vars: list[Variable]):
         self.back_up.append([var.domain.copy() for var in vars])

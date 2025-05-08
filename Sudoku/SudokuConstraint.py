@@ -12,5 +12,5 @@ class SudokuConstraint(Constraint):
         """
         Get all assigned variables and check whether they have different values
         """
-        # Implement here
-        ...
+        values = [var.value for var in self.variables if var.has_value]
+        return len(values) == len(set(values))

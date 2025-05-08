@@ -10,8 +10,8 @@ if __name__ == '__main__':
     s.solve()
     states.print_assignments()
 
-    # print("\nTesting Sudoku solver...")
-    # sudoku = SudokuProblem()
-    # s = Solver(sudoku)
-    # s.solve()
-    # sudoku.print_assignments()
+    print("\nTesting Sudoku solver...")
+    sudoku = SudokuProblem()
+    s = Solver(sudoku)
+    s.solve()
+    sudoku.print_assignments()
