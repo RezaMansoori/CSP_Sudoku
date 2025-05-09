@@ -8,7 +8,12 @@ class KillerCageConstraint(Constraint):
         self.target_sum = target_sum
 
     def is_satisfied(self) -> bool:
-        # Implement here
-        ...
+        values = [var.value for var in self.variables if var.value is not None]
 
-        return True
+        if len(set(values)) != len(values):
+            return False
+
+        if all(var.value is not None for var in self.variables):
+            return sum(values) == self.target_sum
+
+        return sum(values) <= self.target_sum

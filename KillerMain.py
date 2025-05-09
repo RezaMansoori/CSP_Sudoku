@@ -40,7 +40,7 @@ cages = [
 if __name__ == "__main__":
 
     print("\nTesting Sudoku solver...")
-    sudoku = SudokuProblem()
+    sudoku = SudokuProblem(board=board)
     solver = Solver(sudoku)
     solver.solve()
     sudoku.print_assignments()
